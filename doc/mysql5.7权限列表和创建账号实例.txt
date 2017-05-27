@@ -1,0 +1,140 @@
+﻿+-------------------------+---------------------------------------+-------------------------------------------------------+
+| Privilege 权限          | Context    语境                       | Comment   解释                                            |
++-------------------------+---------------------------------------+-------------------------------------------------------+
+| Alter                   | Tables                                | To alter the table                                    |
+改变						表										改变表格
+| Alter routine           | Functions,Procedures                  | To alter or drop stored functions/procedures          |
+改变修改存储过程			函数，过程								更改或删除存储的功能/过程
+| Create                  | Databases,Tables,Indexes              | To create new databases and tables                    |
+创建						|数据库、表、索引						|创建新的数据库和表									
+| Create routine          | Databases                             | To use CREATE FUNCTION/PROCEDURE                      |
+创建程序					数据库									使用create函数/过程
+| Create temporary tables | Databases                             | To use CREATE TEMPORARY TABLE                         |
+创建临时表					数据库									使用创建临时表
+| Create view             | Tables                                | To create new views                                   |
+创建试图					表										创建新的试图
+| Create user             | Server Admin                          | To create new users                                   |
+创建用户					服务器管理								创建新的用户
+| Delete                  | Tables                                | To delete existing rows                               |
+删除						表										删除现有的行
+| Drop                    | Databases,Tables                      | To drop databases, tables, and views                  |
+丢弃						数据库，表								删除数据库，表，和试图
+| Event                   | Server Admin                          | To create, alter, drop and execute events             |
+事件						服务器事件								创建，修改，删除和执行事件
+| Execute                 | Functions,Procedures                  | To execute stored routines                            |
+执行						函数     ， 规程						执行存储过程
+| File                    | File access on server                 | To read and write files on the server                 |
+文件						文件访问服务器							在服务器上读写文件
+| Grant option            | Databases,Tables,Functions,Procedures | To give to other users those privileges you possess   |
+授权选项					数据库，表，函数，规程					拥有给其他用户的权限
+| Index                   | Tables                                | To create or drop indexes                             |
+索引						表											创建或删除索引
+| Insert                  | Tables                                | To insert data into tables                            |
+插入						表										将数据插入表中
+| Lock tables             | Databases                             | To use LOCK TABLES (together with SELECT privilege)   |
+锁定表						数据库									使用锁表（连同select权限）
+| Process                 | Server Admin                          | To view the plain text of currently executing queries |
+进程						服务器管理								查看当前执行查询的纯文本
+| Proxy                   | Server Admin                          | To make proxy user possible                           |
+代理						服务器管理								使代理用户成为可能
+| References              | Databases,Tables                      | To have references on tables                          |
+参考文献					数据库，表								参考表
+| Reload                  | Server Admin                          | To reload or refresh tables, logs and privileges      |
+重载						服务器管理								重新加载或刷新表，日志和权限
+| Replication client      | Server Admin                          | To ask where the slave or master servers are          |
+客户机						服务器管理								问从服务器或主服务器在哪里
+| Replication slave       | Server Admin                          | To read binary log events from the master             |
+从服务器					服务器管理								读取日志事件从主服务器
+| Select                  | Tables                                | To retrieve rows from table                           |
+查询						表										从表中检索行
+| Show databases          | Server Admin                          | To see all databases with SHOW DATABASES              |
+显示所有数据库				服务器管理								查看全部的数据库使用show databases
+| Show view               | Tables                                | To see views with SHOW CREATE VIEW                    |
+显示试图					表										试图显示创建使用show create view
+| Shutdown                | Server Admin                          | To shut down the server                               |
+关闭						服务器管理								关闭服务器
+| Super                   | Server Admin                          | To use KILL thread, SET GLOBAL, CHANGE MASTER, etc.   |
+超级，超人					服务器管理								杀掉线程，设置全局，修改主记录
+| Trigger                 | Tables                                | To use triggers                                       |
+触发器						表										使用触发器
+| Create tablespace       | Server Admin                          | To create/alter/drop tablespaces                      |
+创建表空间					服务器管理								创建/修改/删除表空间
+| Update                  | Tables                                | To update existing rows                               |
+更新						表										更新现有的行
+| Usage                   | Server Admin                          | No privileges - allow connect only  
+							服务器管理								没有权限，只允许连接数据库
+							
+							
+创建只读账户，所有权账户，一般权限账户
+例如：
+1.创建一个只读账号，‘zst_rd@localhost’
+root@localhost:mysql3306.sock [(none)]>grant select on *.* to zst_rd@localhost identified by 'zstlzy';
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+root@localhost:mysql3306.sock [(none)]>flush privileges;
+
+root@localhost:mysql3306.sock [(none)]>show grants for zst_rd@localhost;
++---------------------------------------------+
+| Grants for zst_rd@localhost                 |
++---------------------------------------------+
+| GRANT SELECT ON *.* TO 'zst_rd'@'localhost' |
++---------------------------------------------+
+1 row in set (0.00 sec)
+
+2.创建一个一般业务使用的账号 ：'zst_kf@localhost'
+root@localhost:mysql3306.sock [(none)]>grant select,create,delete,index,insert on *.* to zst_kf@localhost identified by 'zst_kf'
+    -> ;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+root@localhost:mysql3306.sock [(none)]>flush privileges;
+
+root@localhost:mysql3306.sock [(none)]>show grants for zst_kf@localhost;
++----------------------------------------------------------------------------+
+| Grants for zst_kf@localhost                                                |
++----------------------------------------------------------------------------+
+| GRANT SELECT, INSERT, DELETE, CREATE, INDEX ON *.* TO 'zst_kf'@'localhost' |
++----------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+	2.1在创建一般业务账号的时候不小心添加了index权限，实际是不需要的，那就用mysql中revoke命令来回收index权限
+	   解决方法：
+		root@localhost:mysql3306.sock [(none)]>root@localhost:mysql3306.sock [(none)]>revoke index on *.* from zst_kf@localhost;  
+		Query OK, 0 rows affected (0.00 sec)
+		
+		root@localhost:mysql3306.sock [(none)]>flush privileges;
+		Query OK, 0 rows affected (0.00 sec)
+
+		root@localhost:mysql3306.sock [(none)]>show grants for zst_kf@localhost;
+		+---------------------------------------------------------------------+
+		| Grants for zst_kf@localhost                                         |
+		+---------------------------------------------------------------------+
+		| GRANT SELECT, INSERT, DELETE, CREATE ON *.* TO 'zst_kf'@'localhost' |
+		+---------------------------------------------------------------------+
+		1 row in set (0.00 sec)
+
+3.创建一个所有权限的用户ALL账号:zst_admin@localhost
+root@localhost:mysql3306.sock [(none)]>grant all on *.* to zst_admin@localhost identified by 'zst_lzyadmin';
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+root@localhost:mysql3306.sock [(none)]>flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+root@localhost:mysql3306.sock [(none)]>show grants for zst_admin@localhost;
++--------------------------------------------------------+
+| Grants for zst_admin@localhost                         |
++--------------------------------------------------------+
+| GRANT ALL PRIVILEGES ON *.* TO 'zst_admin'@'localhost' |
++--------------------------------------------------------+
+1 row in set (0.00 sec)
+
+
+
+
+							
+个人简介：
+姓名：李志勇
+性别：男
+知数堂新学员A582-李志勇-北京
+QQ：465344837
+目前在北京一家传统企业任信息工程师（打杂）一职。文化不高，学习不断，喜欢钻研，
+遇到问题不整明白不罢休。在单位有一个外号“志勇知道”。。
