@@ -51,14 +51,14 @@
       Master_Host: 192.168.75.129
       Master_User: repl
       Master_Port: 3306
-    Connect_Retry: 60
+      Connect_Retry: 60
       Master_Log_File: mysql-bin.000021
       Read_Master_Log_Pos: 441
-       Relay_Log_File: relay-bin.000001
-    Relay_Log_Pos: 4
-    Relay_Master_Log_File: mysql-bin.000021
-     Slave_IO_Running: No
-    Slave_SQL_Running: No
+      Relay_Log_File: relay-bin.000001
+      Relay_Log_Pos: 4
+      Relay_Master_Log_File: mysql-bin.000021
+      Slave_IO_Running: No
+      Slave_SQL_Running: No
     
     root@localhost:mysql3307.sock [(none)]>start slave;  <----##开始slave状态
     Query OK, 0 rows affected (0.00 sec)
@@ -89,6 +89,8 @@
 
 
   4.登录主库
+  
+  
 # `mysql -S /tmp/mysql3306.sock`
     >show variables like "%server_id%";
     >show variables like "%log%";
@@ -108,6 +110,7 @@
     root@localhost:mysql3306.sock [db2]>select * from t1;
 
 在从库中查看
+
 
 `> select * from t1;  <----看到和主库的数据是一样的`。
 
